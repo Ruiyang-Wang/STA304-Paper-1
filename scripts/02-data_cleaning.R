@@ -1,8 +1,8 @@
 #### Preamble ####
 # Purpose: Cleans the raw marriage data into an analysis dataset
-# Author: Rohan Alexander
+# Author: Ruiyang Wang
 # Date: 19 September 2024
-# Contact: rohan.alexander@utoronto.ca
+# Contact: ruiyang.wang@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: Need to have downloaded the data
 # Any other information needed? None.

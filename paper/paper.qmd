@@ -1,12 +1,12 @@
 ---
-title: "Toronto Marriage Licence Statistics"
+title: "2023 Ontario Monthly Communicable Disease Cases Study"
 subtitle: "Discussions and Graphs"
 author: 
   - Ruiyang Wang
-thanks: "Code and data are available at: https://github.com/Ruiyang-Wang/STA304-Week3."
-date: today
+thanks: "Code and data are available at: https://github.com/Ruiyang-Wang/STA304-Paper-1.git"
+date: Sept.24th, 2024
 date-format: long
-abstract: "This study analyzes the marriage licence statistics for Toronto, focusing on marrying trends over recent years."
+abstract: "This study analyzes the Monthly Communicable Disease cases for Ontario in 2023, focusing on 3 mainly cosiderred disease: HIV, Salmonellosis, and Sporadic Influenza. This paper presenst the general graphs for each disease, dicusses the genral trends, and further analysis."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -18,49 +18,155 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
-setwd("/home/rstudio/STA304 Week3/starter_folder-main-master")
-data <- read_csv(("data/analysis_data/analysis_data.csv"))
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(knitr)
+
+setwd("/home/rstudio/STA304 Paper1")
+analysis_data <- read_csv(("data/analysis_data/analysis_data.csv"))
 
 ```
 
 
 # Introduction
+In 2023, Ontario, Canada, experienced distinct trends in the prevalence of communicable diseases such as HIV, Salmonellosis, and Sporadic Influenza. Monitoring and analyzing the seasonal patterns of these diseases is crucial for public health.
 
-You can and should cross-reference sections and sub-sections. We use @talia, @opendatatoronto, and @rohan.
+HIV, a chronic and life-threatening condition caused by the human immunodeficiency virus, has shown relatively stable case numbers throughout the year. 
 
-The remainder of this paper is structured as follows. @sec-mydatasection
+Salmonellosis is an infection caused by the Salmonella bacteria, typically contracted through the consumption of contaminated food or water. It commonly results in gastrointestinal symptoms such as diarrhea, fever, and abdominal cramps.
+
+Influenza, commonly known as the flu, is a highly contagious respiratory illness caused by influenza viruses.
+
+This paper aims to analyze the statistical trends of these three diseases in Ontario throughout 2023, providing a general overview of their seasonal patterns. We also identify potential drivers of these trends and discuss their implications for public health policy. The findings will contribute to a better understanding of disease dynamics in the region and then support the development of prevention and strategies.
+
+ We use data and codes from @talia, @opendatatoronto, and @rohan. The exact data is from @toronto2023data.
+
+The remainder of this paper is structured as follows.
+@sec-mydatasection
+@sec-point
+@sec-first-point
+@sec-sec-point
+@sec-trd-point
 
 
 
-# Data {#sec-mydatasection}
 
-Some of our data is of marriage (@fig-marriage), from @opendataatoronto.
+
+# Data Summary {#sec-mydatasection}
+
+Our data is from @opendatatoronto, named "Monthly Communicable Disease Surveillance". The time range of the whole dataset is from 2016 to 2024. We only extract 3 classic diseases in this dataset for simplification, and set the year of analysis to 2023, which is the most recent full-year data and most unaffected data by COVID-19 after the 2019 Pandemic.
 
 ```{r}
-#| label: fig-marriage
-#| fig-cap: Marriage date and licences
+#| label: fig-diseases
+#| fig-cap: Monthly cases of diseases
 #| echo: false
 
- data |> 
-  ggplot(aes(x = date, y = marriage_licenses)) +
-  geom_point()
+# Define the diseases of interest
+disease_focus <- c("HIV", "Salmonellosis", "Influenza - sporadic")
 
+# Filter the dataset to extract only the rows for the specified diseases
+extracted_data <- analysis_data %>%
+  filter(Disease %in% disease_focus)
 ```
 
 
+# Specific Disease Analysis {#sec-point}
+
+## HIV {#sec-first-point}
+
+```{r}
+#| label: sec-first-point
+#| fig-cap: Monthly cases of HIV
+#| echo: false
+
+# Convert the dataset to long format for easier plotting
+extracted_data_long <- extracted_data %>%
+  pivot_longer(
+    cols = January:December, # Adjust this based on your actual month column names
+    names_to = "Month",
+    values_to = "Cases"
+  )
+
+# Order the months correctly
+extracted_data_long$Month <- factor(extracted_data_long$Month, 
+                                   levels = c("January", "February", "March", "April", "May", "June", 
+                                              "July", "August", "September", "October", "November", "December"))
+
+# Plot for HIV
+ggplot(extracted_data_long %>% filter(Disease == "HIV"), aes(x = Month, y = Cases)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  geom_text(aes(label = Cases), vjust = -0.5, size = 3) +
+  theme_minimal() +
+  labs(title = "Monthly Trend of HIV in 2023",
+       x = "Month",
+       y = "Number of Cases") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+### Characteristics of HIV in 2023
+- The number of HIV cases ranges from around 47 to 78 per month.
+
+- There are noticeable fluctuations throughout the year, with peaks in May and October and a significant drop in April and September.
+
+- The case count is relatively stable in other months, hovering between 50 and 75 cases.
+
+### Summary
+  HIV cases in Ontario displayed moderate monthly fluctuations, with notable peaks in May and October. These variations could be influenced by changes in testing rates or social behaviors.
+  
+
+## Salmonellosis {#sec-sec-point}
+```{r}
+#| label: sec-sec-point
+#| fig-cap: Monthly cases of Salmonellosis
+#| echo: false
+
+# Plot for Salmonellosis
+ggplot(extracted_data_long %>% filter(Disease == "Salmonellosis"), aes(x = Month, y = Cases)) +
+  geom_bar(stat = "identity", fill = "salmon") +
+  geom_text(aes(label = Cases), vjust = -0.5, size = 3) +
+  theme_minimal() +
+  labs(title = "Monthly Trend of Salmonellosis in 2023",
+       x = "Month",
+       y = "Number of Cases") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### Characteristics of Salmonellosis
+- The number of cases is relatively low, ranging from 27 to 52 per month.
+
+- There is a significant peak in July, with a steady increase from April, followed by a decline from August to December.
+
+- Salmonellosis cases are highest in summer months, which is consistent with the bacteria's transmission patterns.
+
+### Summary
+  Salmonellosis cases peaked in the summer months, particularly in July, likely reflecting increased risk factors such as outdoor food consumption and higher temperatures.
 
 
+## Sporadic Influenza {#sec-trd-point}
+```{r}
+#| label: sec-trd-point
+#| fig-cap: Monthly cases of Sporadic Influenza
+#| echo: false
 
+ggplot(extracted_data_long %>% filter(Disease == "Influenza - sporadic"), aes(x = Month, y = Cases)) +
+  geom_bar(stat = "identity", fill = "lightgreen") +
+  geom_text(aes(label = Cases), vjust = -0.5, size = 3) +
+  theme_minimal() +
+  labs(title = "Monthly Trend of Influenza - sporadic in 2023",
+       x = "Month",
+       y = "Number of Cases") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
 
-# Discussion
+### Characteristics
+- There is a sharp increase in cases in December, reaching a peak of 1560 cases, while the rest of the year shows relatively low numbers.
 
-## First discussion point {#sec-first-point}
+- A smaller peak in March and a gradual increase from October to November indicate sporadic activity.
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
-## Second discussion point
-
-## Third discussion point
+### Summary
+  Sporadic Influenza cases spiked sharply in December, marking the onset of the flu season. A smaller peak in March suggests occasional outbreaks earlier in the year.
 
 ## Weaknesses and next steps
 

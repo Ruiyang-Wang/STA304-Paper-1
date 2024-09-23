@@ -1,8 +1,8 @@
 #### Preamble ####
 # Purpose: Downloads and saves the data from Open Data Toronto
-# Author: Rohan Alexander
+# Author: Ruiyang Wang
 # Date: 19 September 2024
-# Contact: rohan.alexander@utoronto.ca
+# Contact: ruiyang.wang@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: None
 # Any other information needed? None

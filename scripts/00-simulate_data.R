@@ -1,8 +1,8 @@
 #### Preamble ####
-# Purpose: Simulates data
-# Author: Rohan Alexander
+# Purpose: in order to simulates data
+# Author: Ruiyang Wang
 # Date: 19 September 2024
-# Contact: rohan.alexander@utoronto.ca
+# Contact: ruiyang.wang@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: None
 # Any other information needed? None
@@ -13,11 +13,11 @@ library(tidyverse)
 
 
 #### Simulate data ####
-set.seed(304)
+set.seed(894)
 
 # Define the start and end date
-start_date <- as.Date("2018-01-01")
-end_date <- as.Date("2023-12-31")
+start_date <- as.Date("2019-10-01")
+end_date <- as.Date("2020-02-24")
 
 # Set the number of random dates you want to generate
 number_of_dates <- 100
