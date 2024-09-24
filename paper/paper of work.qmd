@@ -147,7 +147,7 @@ ggplot(extracted_data_long %>% filter(Disease == "Salmonellosis"), aes(x = Month
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-### Characteristics of Salmonellosis
+### Characteristics of Salmonellosis in 2023
 
 - According to Figure.2, the number of cases ranges from 27 to 52 per month.
 
@@ -176,7 +176,7 @@ ggplot(extracted_data_long %>% filter(Disease == "Influenza - sporadic"), aes(x 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-### Characteristics
+### Characteristics of Sporadic Influenza in 2023
 
 - According to Figure.3, there is a sharp increase in cases in December, reaching a peak of 1560 cases. The rest of the year shows relatively low numbers.
 
