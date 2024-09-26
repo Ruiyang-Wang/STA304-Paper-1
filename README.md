@@ -1,23 +1,21 @@
-# Marriages in Toronto before and after the pandemic
+# Communicable Disease Trends in Ontario
 
 ## Overview
 
-This repo provides students with a foundation for their own projects associated with *Telling Stories with Data*. You do not need every aspect for every paper and you should delete aspects that you do not need.
-
+This repository provides an analysis of communicable disease trends in Ontario, Canada, for the year 2023. The analysis focuses on three key diseases: HIV, Salmonellosis, and Influenza - sporadic. The data is sourced from the City of Toronto's Open Data Portal and processed using R programming. The findings aim to support public health interventions and guide future research on disease dynamics.
 
 ## File Structure
 
-The repo is structured as:
+The repository is structured as:
 
--   `data/raw_data` contains the raw data as obtained from X.
--   `data/analysis_data` contains the cleaned dataset that was constructed.
--   `model` contains fitted models. 
--   `other` contains relevant literature, details about LLM chat interactions, and sketches.
--   `paper` contains the files used to generate the paper, including the Quarto document and reference bibliography file, as well as the PDF of the paper. 
--   `scripts` contains the R scripts used to simulate, download and clean data.
+- `data/raw_data` contains the raw data as obtained from the City of Toronto's Open Data Portal.
+- `data/analysis_data` contains the cleaned dataset that was used in the analysis.
+- `model` contains fitted models for analyzing disease trends and predictions.
+- `other` contains relevant literature, details about data processing, and additional sketches.
+- `paper` contains the files used to generate the paper, including the Quarto document, reference bibliography file, and the final report.
+- `scripts` contains the R scripts used to clean, analyze, and visualize the data.
 
+## Statement on LLM Usage
 
-## Statement on LLM usage
-
-Aspects of the code were written with the help of the auto-complete tool, Codriver. The abstract and introduction were written with the help of ChatHorse and the entire chat history is available in inputs/llms/usage.txt.
+Some of the code were developed with the help of a large language model (LLM) for discovering the way to generate certain graphs in R code, and improving citation and paper formating in qmd. file editing. You may find all talks in the other/llm/usage.txt.
 

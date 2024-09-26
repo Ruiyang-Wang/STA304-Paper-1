@@ -1,6 +1,6 @@
 ---
 title: "2023 Ontario Monthly Communicable Disease Specified Cases Study"
-subtitle: "Discussions and Graphs"
+subtitle: "HIV, Salmonellosis, and Influenza cases Analysis"
 author: 
   - Ruiyang Wang
 thanks: "Code and data are available at: https://github.com/Ruiyang-Wang/STA304-Paper-1.git"
@@ -25,6 +25,8 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(knitr)
+library(kableExtra)
+
 
 setwd("/home/rstudio/STA304 Paper1")
 analysis_data <- read_csv(("data/analysis_data/analysis_data.csv"))
@@ -34,7 +36,7 @@ analysis_data <- read_csv(("data/analysis_data/analysis_data.csv"))
 
 # Introduction {#sec-intro}
 
-In 2023, Ontario, Canada, experienced distinct trends in the prevalence of communicable diseases such as HIV, Salmonellosis, and Sporadic Influenza. Monitoring and analyzing the seasonal patterns of these diseases is crucial for public health.
+In 2023 Ontario, Canada, experienced distinct trends in the prevalence of communicable diseases such as HIV, Salmonellosis, and Sporadic Influenza. Monitoring and analyzing the seasonal patterns of these diseases is crucial for public health.
 
 HIV, a chronic and life-threatening condition caused by the human immunodeficiency virus, has shown relatively stable case numbers throughout the year. 
 
@@ -44,7 +46,7 @@ Sporadic Influenza, commonly known as the flu, is a highly contagious respirator
 
 This paper aims to analyze the statistical trends of these three diseases in Ontario throughout 2023, providing a general overview of their seasonal patterns. We also identify potential drivers of these trends and discuss their implications for public health policy. The findings will contribute to a better understanding of disease dynamics in the region and then support the development of prevention and strategies.
 
-We use data and codes from @talia, @opendatatoronto, and @rohan. The exact data is from @toronto2023data.
+We use data and codes from [@talia], [@opendatatoronto], and [@rohan]. The exact data is from [@toronto2023data].
 
 The remainder of this paper is structured as follows.
 
@@ -53,7 +55,8 @@ The remainder of this paper is structured as follows.
 - [@sec-point] Disease Analysis
 - [@sec-first-point] HIV
 - [@sec-sec-point] Salmonellosis
-- [@sec-trd-point] Sporadic Influenza
+- [@sec-points] Sporadic Influenza
+- [@sec-year] Yearly Pattern
 - [@sec-weakness] Weakness and Next Step
 - [@sec-appen] Appendix
 - [@sec-ref] References
@@ -62,11 +65,11 @@ The remainder of this paper is structured as follows.
 
 # Data Summary {#sec-mydatasection}
 
-Our data is from @opendatatoronto, named "Monthly Communicable Disease Surveillance". The time range of the whole dataset is from 2016 to 2024. We only extract 3 classic diseases in this dataset for simplification, and set the year of analysis to 2023, which is the most recent full-year data and most unaffected data by COVID-19 after the 2019 Pandemic.
+Our data is from [@opendatatoronto], named "Monthly Communicable Disease Surveillance". The time range of the whole dataset is from 2016 to 2024. We only extract 3 classic diseases in this dataset for simplification, and set the year of analysis to 2023, which is the most recent full-year data and most unaffected data by COVID-19 after the 2019 Pandemic.
 
 ```{r}
 #| label: fig-diseases
-#| fig-cap: Monthly cases of diseases
+#| fig-cap: Diseases Data Table
 #| echo: false
 
 # Define the diseases of interest
@@ -75,13 +78,21 @@ disease_focus <- c("HIV", "Salmonellosis", "Influenza - sporadic")
 # Filter the dataset to extract only the rows for the specified diseases
 extracted_data <- analysis_data %>% filter(Disease %in% disease_focus)
 
-tibble(extracted_data)
-```
-- **Variable Explanation**
-- "Disease": This variable represents the specific communicable diseases being analyzed in the dataset.
-- "January - December" : These variables indicate the number of reported cases of each disease for each month in the year 2023. They provide a month-by-month breakdown of disease prevalence.
+extracted_data_limited <- extracted_data %>%
+  select("Disease", "2023 YTD Cases", "2023 YTD Rate1", "January", "February", "March")
 
-- I have cleaned the data by eliminating all unused diseases, and cancelled out all NA values or labels. I also changed the data type of numbers from str to double, in order to make sure the graphing process is accurate.
+# Create the table with the limited columns
+extracted_data_limited %>%
+  kable(caption = "Monthly Cases of Diseases (At a Glance)") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                full_width = F, position = "center")
+```
+## Variable Explanation
+"Disease": This variable represents the specific communicable diseases being analyzed in the dataset.
+"January - December" : These variables indicate the number of reported cases of each disease for each month in the year 2023. They provide a month-by-month breakdown of disease prevalence.
+
+## Data Cleaning
+I have cleaned the data by eliminating all unused diseases, and cancelled out all NA values or labels. I also changed the data type of numbers from string to double, in order to make sure the graphing process is accurate.
 
 # Disease Analysis {#sec-point}
 
@@ -110,24 +121,15 @@ ggplot(extracted_data_long %>% filter(Disease == "HIV"), aes(x = Month, y = Case
   geom_bar(stat = "identity", fill = "skyblue") +
   geom_text(aes(label = Cases), vjust = -0.5, size = 3) +
   theme_minimal() +
-  labs(title = "Monthly Trend of HIV in 2023",
-       x = "Month",
+  labs(x = "Month",
        y = "Number of Cases") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
 
-### Characteristics of HIV in 2023
+According to [@sec-first-point], the number of HIV cases ranges from around 47 to 78 per month. There are noticeable fluctuations throughout the year, with peaks in May and October and a significant drop in April and September. The case count is relatively stable in other months, hovering between 50 and 75 cases.
 
-- According to Figure.1, the number of HIV cases ranges from around 47 to 78 per month.
-
-- There are noticeable fluctuations throughout the year, with peaks in May and October and a significant drop in April and September.
-
-- The case count is relatively stable in other months, hovering between 50 and 75 cases.
-
-### Summary
-
-HIV cases in Ontario displayed moderate monthly fluctuations, with notable peaks in May and October. These variations could be influenced by changes in testing rates or social behaviors.
+Overall, HIV cases in Ontario displayed moderate monthly fluctuations, with notable peaks in May and October. These variations could be influenced by changes in testing rates or social behaviors.
   
 
 ## Salmonellosis {#sec-sec-point}
@@ -141,28 +143,19 @@ ggplot(extracted_data_long %>% filter(Disease == "Salmonellosis"), aes(x = Month
   geom_bar(stat = "identity", fill = "salmon") +
   geom_text(aes(label = Cases), vjust = -0.5, size = 3) +
   theme_minimal() +
-  labs(title = "Monthly Trend of Salmonellosis in 2023",
-       x = "Month",
+  labs(x = "Month",
        y = "Number of Cases") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-### Characteristics of Salmonellosis in 2023
+According to [@sec-sec-point], the number of cases ranges from 27 to 52 per month.There is a significant peak in July, with a steady increase from April, followed by a decline from August to December.Salmonellosis cases are highest in summer months, which is consistent with the bacteria's transmission patterns.
 
-- According to Figure.2, the number of cases ranges from 27 to 52 per month.
-
-- There is a significant peak in July, with a steady increase from April, followed by a decline from August to December.
-
-- Salmonellosis cases are highest in summer months, which is consistent with the bacteria's transmission patterns.
-
-### Summary
-
-Salmonellosis cases peaked in the summer months, particularly in July, likely reflecting increased risk factors such as outdoor food consumption and higher temperatures.
+Overall, Salmonellosis cases peaked in the summer months, particularly in July, likely reflecting increased risk factors such as outdoor food consumption and higher temperatures.
 
 
-## Sporadic Influenza {#sec-trd-point}
+## Sporadic Influenza {#sec-points}
 ```{r}
-#| label: sec-trd-point
+#| label: sec-points
 #| fig-cap: Monthly cases of Sporadic Influenza
 #| echo: false
 
@@ -170,54 +163,63 @@ ggplot(extracted_data_long %>% filter(Disease == "Influenza - sporadic"), aes(x 
   geom_bar(stat = "identity", fill = "lightgreen") +
   geom_text(aes(label = Cases), vjust = -0.5, size = 3) +
   theme_minimal() +
-  labs(title = "Monthly Trend of Influenza - sporadic in 2023",
-       x = "Month",
+  labs(x = "Month",
        y = "Number of Cases") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+According to [@sec-points], there is a sharp increase in cases in December, reaching a peak of 1560 cases. The rest of the year shows relatively low numbers.A smaller peak in March and a gradual increase from October to November indicate sporadic activity.
 
-### Characteristics of Sporadic Influenza in 2023
+Overall, Sporadic Influenza cases spiked sharply in December, marking the onset of the flu season. A smaller peak in March suggests occasional outbreaks earlier in the year.
 
-- According to Figure.3, there is a sharp increase in cases in December, reaching a peak of 1560 cases. The rest of the year shows relatively low numbers.
+## Yearly Pattern {#sec-year}
 
-- A smaller peak in March and a gradual increase from October to November indicate sporadic activity.
+```{r}
+#| label: sec-year
+#| fig-cap: Yearly Pattern of three diseases
+#| echo: false
 
-### Summary
+# Create the line graph using the existing extracted_data_long
+ggplot(extracted_data_long %>% 
+         filter(Disease %in% c("HIV", "Salmonellosis", "Influenza - sporadic")), 
+       aes(x = Month, y = Cases, color = Disease, group = Disease)) +
+  geom_line() + # Line for each disease
+  geom_point() + # Points on the lines for each month
+  labs(x = "Month",
+       y = "Number of Cases") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_color_manual(values = c("HIV" = "skyblue", "Salmonellosis" = "salmon", "Influenza - sporadic" = "lightgreen"))
+```
 
-Sporadic Influenza cases spiked sharply in December, marking the onset of the flu season. A smaller peak in March suggests occasional outbreaks earlier in the year.
+[@sec-year] illustrates the yearly pattern of HIV, Salmonellosis, and Influenza in Ontario for the year 2023. The most prominent feature is the dramatic increase in Influenza cases observed in December, reaching a peak of over 1500 cases. This surge matches the flu season in Canada. There are several factors due to the spike in December, including lower temperatures, increased indoor gathering, etc. The Ontario Health Plan for an Influenza Pandemic emphasizes infection prevention and control measures, particularly in occupational health and safety settings. This plan outlines protocols for reducing the transmission of influenza among healthcare workers and vulnerable populations during an outbreak [@ontario_flu]. We might expect the inflenza cases decrease as time passes.
+
+In contrast, HIV cases show a relatively stable trend throughout the whole 2023. The pattern include a few fluctuations observed during May and October. These peaks could be possibly linked to public health observances such as HIV Testing Week in May and World AIDS Day in December. The consistency in HIV cases also suggests that while the disease remains a public health concern, preventions and medical treatments might help controlling the spread.
+
+Salmonellosis cases remained relatively low and stable across all months, with no significant seasonal spikes. This pattern is consistent with a well-regulated food safety environment and public health measures in Canada.One notable initiative is the Ontario Food and Nutrition Strategy (OFNS), which integrates the food, agriculture, and nutrition sectors to improve food safety, access, and literacy across the province. This strategy outlines key strategic directions, including healthy food access, food literacy, and the promotion of resilient food systems [@ontario_food]. Salmonellosis is often linked to the consumption of contaminated food, and the lack of significant spikes might indicate effective food safety regulations and awareness among the population.
 
 ## Weaknesses and Next Steps {#sec-weakness}
 
 ### Limitations and Weaknesses of the Data Processing Process
 
-1. **Temporal and Spatial Limitations:**
-   - The analysis is limited to the year 2023, providing a short view without the ability to observe longer-term trends or compare with previous years.
-   - This data might be affected by the COVID-19 symptoms due to pharmacological reasons.
+First, the analysis is limited to the year 2023, providing a short view without the ability to observe longer-term trends or compare with previous years. Data [@fig-diseases] might be affected by the COVID-19 symptoms due to pharmacological reasons.
 
-2. **Lack of Contextual Factors:**
-   - The data does not include contextual information such as socioeconomic factors, healthcare access, or specific public health interventions, which might be crucial for understanding the causes of disease trends.
+Then, the data does not include contextual information such as socioeconomic factors, healthcare access, or specific public health interventions, which might be crucial for understanding the causes of disease trends.
 
-4. **Statistical Perspective:**
-   - The use of basic descriptive statistics and visualizations limits the depth of insights that can be derived, lacking more advanced statistical or predictive modeling techniques.
+Thirdly,  the use of basic descriptive statistics and visualizations limits the depth of insights that can be derived, lacking more advanced statistical or predictive modeling techniques.
 
 ### Further Analysis for Each Disease
 
 1. **HIV**
-    - **Investigate Seasonal Factors:** Conduct a more detailed analysis of potential seasonal factors affecting HIV cases, such as changes in social behaviors, festivals, or events, which might influence the transmission rates.
 
-    - **Public Health Interventions:** Evaluate the impact of specific public health initiatives, such as awareness campaigns, increased testing, or outreach programs, to determine their effectiveness in reducing HIV transmission during peak months.
-
-    - **Longitudinal Analysis:** Extend the analysis to include data from previous years to identify long-term trends and changes in HIV incidence over time, adjusting for any policy or healthcare changes.
+First, we need to conduct a more detailed analysis of potential seasonal factors affecting HIV cases, such as changes in social behaviors, festivals, or events, which might influence the transmission rates. Then, we should evaluate the impact of specific public health initiatives, such as awareness campaigns, increased testing, or outreach programs, to determine their effectiveness in reducing HIV transmission during peak months. At last, we can extend the analysis to include data from previous years to identify long-term trends and changes in HIV incidence over time, adjusting for any policy or healthcare changes.
 
 2. **Salmonellosis**
-    - **Foodborne Outbreak Analysis:** Perform an investigation of foodborne outbreaks, and link the reported cases with specific food sources and outbreak reports from health agencies.
 
-    - **Environmental and Behavioral Correlations:** Use environmental data and behavioral data (e.g., outdoor gatherings, food festivals) to build a model to explain seasonal fluctuations for cases of Salmonellosis.
+First, we need to perform an investigation of foodborne outbreaks, and link the reported cases with specific food sources and outbreak reports from health agencies. Then, we should use some environmental data and behavioral data (e.g., outdoor gatherings, food festivals) to build a model to explain seasonal fluctuations for cases of Salmonellosis.
 
 3. **Sporadic Influenza**
-    - **Seasonal Modeling:** Use additional data of vaccination and climates, develop a predictive model for influenza cases, in order to forecast future outbreaks and improve Ontario health systems.
 
-    - **Healthcare System Impact:** Use additional data, analyze the impact of the winter peak on healthcare resources, like hospitalizations and ICU admissions, to evaluate the preparedness and resilience of the healthcare system during the flu season.
+First, we can use additional data of vaccination and climates, develop a predictive model for influenza cases, in order to forecast future outbreaks and improve Ontario health systems.Then, we may analyze the impact of the winter peak on healthcare resources, like hospitalizations and ICU admissions, to evaluate the preparedness and resilience of the healthcare system during the flu season.
 
 
 \newpage
